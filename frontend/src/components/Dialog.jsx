@@ -145,13 +145,7 @@ export default function Dialog() {
                         <input
                             type="datetime-local"
                             name="startTime"
-                            value={
-                                formData.startTime
-                                ? new Date(new Date(formData.startTime).getTime() - new Date().getTimezoneOffset() * 60000)
-                                    .toISOString()
-                                    .slice(0, 16)
-                                : ""
-                            }
+                            value={formData.startTime || ""}
                             onChange={handleChange}
                             required
                             className="w-full border rounded-lg px-3 py-2 outline-none focus:ring focus:ring-blue-300"
