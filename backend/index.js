@@ -19,7 +19,7 @@ let app = express()
 app.set("trust proxy", 1);
 // Middleware
 app.use(cors({
-  origin: "https://nusc-attendance.netlify.app",
+  origin: ["https://nusc-attendance.netlify.app","http://localhost:5173"], // make sure link not have / at the end
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization", "token"],
   credentials: true
