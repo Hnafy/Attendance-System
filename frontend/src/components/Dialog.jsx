@@ -17,7 +17,32 @@ export default function Dialog() {
     let { setAlert } = useAlert();
 
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        // If changing startTime (from datetime-local input) convert the local
+        // value (e.g. "2025-10-05T14:30") to an ISO UTC string so it can be
+        // stored/sent to MongoDB consistently. For other fields just set raw.
+        if (e.target.name === "startTime") {
+            const localVal = e.target.value;
+            setFormData({
+                ...formData,
+                startTime: localVal ? new Date(localVal).toISOString() : "",
+            });
+        } else {
+            setFormData({ ...formData, [e.target.name]: e.target.value });
+        }
+    };
+
+    // Helper to convert an ISO date string (stored/returned by backend/Mongo)
+    // into the value format expected by <input type="datetime-local" /> which
+    // is a local date/time string like "YYYY-MM-DDTHH:mm". We adjust for the
+    // timezone offset so the displayed value is in the user's local region.
+    const isoToLocalInput = (iso) => {
+        if (!iso) return "";
+        const d = new Date(iso);
+        // shift by timezone offset and then take ISO string to get local time
+        const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000)
+            .toISOString()
+            .slice(0, 16);
+        return local;
     };
 
     const handleSubmit = async (e) => {
@@ -142,14 +167,16 @@ export default function Dialog() {
                         <label className="block text-sm font-medium mb-1">
                             Start Time
                         </label>
-                        <input
-                            type="datetime-local"
-                            name="startTime"
-                            value={formData.startTime || ""}
-                            onChange={handleChange}
-                            required
-                            className="w-full border rounded-lg px-3 py-2 outline-none focus:ring focus:ring-blue-300"
-                            />
+                                                <input
+                                                        type="datetime-local"
+                                                        name="startTime"
+                                                        value={isoToLocalInput(formData.startTime)}
+                                                        onChange={handleChange}
+                                                        required
+                                                        className="w-full border rounded-lg px-3 py-2 outline-none focus:ring focus:ring-blue-300"
+                                                />
+
+                            
                     </div>
 
                     <div className="flex justify-end space-x-2 pt-3">
