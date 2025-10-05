@@ -18,9 +18,8 @@ export default function Login() {
     const [showPassword, setShowPassword] = useState(false);
     const baseUrl = import.meta.env.VITE_BASE_URL;
     let { login } = useAuth();
-    let {setAlert} = useAlert()
-    let {setLoading} = useLoading()
-    
+    let { setAlert } = useAlert();
+    let { setLoading } = useLoading();
 
     // console.log(baseUrl);
     async function handleSubmit(e) {
@@ -29,79 +28,86 @@ export default function Login() {
 
         // validation
         if (!input.email || input.password.length < 6) {
-            console.log("invalid inputs");
+            // console.log("invalid inputs");
             setAlert({
-                    visible: true,
-                    type: "danger",
-                    message: "invalid inputs",
-                });
+                visible: true,
+                type: "danger",
+                message: "invalid inputs",
+            });
             setAccept(false);
             return;
         }
-        
-        if(location.pathname === "/admin"){
-            console.log("admin login");
+
+        if (location.pathname === "/admin") {
+            // console.log("admin login");
             try {
                 setLoading(true);
                 // upload user details
-                let res = await axios.post(`${baseUrl}/professor/login`, {
-                    email: input.email,
-                    password: input.password,
-                },{ withCredentials: true });
-    
-                console.log("✅ Login:", res.data); // TODO: replace with alert
-    
-                console.log(res.data)
+                let res = await axios.post(
+                    `${baseUrl}/professor/login`,
+                    {
+                        email: input.email,
+                        password: input.password,
+                    },
+                    { withCredentials: true }
+                );
+
+                // console.log("✅ Login:", res.data); // TODO: replace with alert
+
+                // console.log(res.data)
                 navigate(`/admin/${res.data.data.id}`);
                 // save token in cookie
                 login(res.data.token, res.data.data.id);
-    
+
                 setAccept(false);
             } catch (err) {
-                console.log(err.response.data);
+                // console.log(err.response.data);
                 setAlert({
-                        visible: true,
-                        type: "danger",
-                        message: err.response.data.msg,
-                    });
+                    visible: true,
+                    type: "danger",
+                    message: err.response.data.msg,
+                });
                 setAccept(false);
-            }finally {
+            } finally {
                 setLoading(false);
             }
-        }else{
+        } else {
             try {
                 setLoading(true);
                 // upload user details
-                let res = await axios.post(`${baseUrl}/students/login`, {
-                    email: input.email,
-                    password: input.password,
-                },{ withCredentials: true });
-    
-                console.log("✅ Login:", res.data); // TODO: replace with alert
-    
+                let res = await axios.post(
+                    `${baseUrl}/students/login`,
+                    {
+                        email: input.email,
+                        password: input.password,
+                    },
+                    { withCredentials: true }
+                );
+
+                // console.log("✅ Login:", res.data); // TODO: replace with alert
+
                 // back to the page user came from or to the default page
                 const from = location.state?.from?.pathname || "/";
                 navigate(from, { replace: true });
                 // nav(`/attendance/${classNameInQr}`);
-    
-                console.log(res.data)
+
+                // console.log(res.data)
                 // save token in cookie
                 login(res.data.token, res.data.data.id);
-    
+
                 setAccept(false);
             } catch (err) {
-                console.log(err.response.data);
+                // console.log(err.response.data);
                 setAlert({
-                        visible: true,
-                        type: "danger",
-                        message: err.response.data.msg,
-                    });
+                    visible: true,
+                    type: "danger",
+                    message: err.response.data.msg,
+                });
                 setAccept(false);
-            }finally {
+            } finally {
                 setLoading(false);
             }
         }
-
     }
     return (
         <>

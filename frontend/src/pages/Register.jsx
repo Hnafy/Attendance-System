@@ -21,7 +21,7 @@ export default function Register() {
     const baseUrl = import.meta.env.VITE_BASE_URL;
     // console.log(baseUrl);
     let [accept, setAccept] = useState(false);
-    let {setAlert} = useAlert()
+    let { setAlert } = useAlert();
     async function handleSubmit(e) {
         e.preventDefault();
         setAccept(true);
@@ -33,12 +33,12 @@ export default function Register() {
             input.password.length < 6 ||
             input.password !== input.resetPassword
         ) {
-            console.log("invalid inputs");
+            // console.log("invalid inputs");
             setAlert({
-                    visible: true,
-                    type: "danger",
-                    message: "invalid inputs",
-                });
+                visible: true,
+                type: "danger",
+                message: "invalid inputs",
+            });
         } else {
             try {
                 // upload user details
@@ -48,7 +48,7 @@ export default function Register() {
                     email: input.email,
                     password: input.password,
                 });
-                console.log("✅ Registered:", res.data); // add alert
+                // console.log("✅ Registered:", res.data); // add alert
 
                 // save token in cookie
                 login(res.data.token, res.data.data.id);
@@ -59,7 +59,7 @@ export default function Register() {
 
                 setAccept(false);
             } catch (err) {
-                console.log(err);
+                // console.log(err);
                 setAlert({
                     visible: true,
                     type: "danger",
@@ -124,7 +124,10 @@ export default function Register() {
                             placeholder="Student Code"
                             required
                             onChange={(e) => {
-                                setInput({ ...input, studentCode: e.target.value });
+                                setInput({
+                                    ...input,
+                                    studentCode: e.target.value,
+                                });
                             }}
                             value={input.studentCode}
                             className="bg-transparent text-text placeholder-gray-400 outline-none text-sm w-full h-full"

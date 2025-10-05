@@ -10,10 +10,10 @@ export default function LectureTable() {
     let { setDialog, setMood, setId } = useDialog();
     let { lectures, setLectures } = useLectures();
     let { setAlert } = useAlert();
-    let {admin} = useAuth()
+    let { admin } = useAuth();
 
     function onUpdate(id) {
-        console.log("Update lecture with ID:", id);
+        // console.log("Update lecture with ID:", id);
         setDialog(true);
         setMood("update");
         setId(id);
@@ -24,10 +24,10 @@ export default function LectureTable() {
                 `${import.meta.env.VITE_BASE_URL}/lectures/${id}`,
                 { headers: { token: Cookies.get("token") } }
             );
-            console.log(res);
+            // console.log(res);
             setAlert({
                 visible: true,
-                type: "danger",  // Changed to success since deletion was successful
+                type: "danger", // Changed to success since deletion was successful
                 message: res.data.msg,
             });
             setLectures((prevLectures) =>
@@ -38,7 +38,8 @@ export default function LectureTable() {
             setAlert({
                 visible: true,
                 type: "danger",
-                message: err.response?.data?.message || "Error deleting lecture"
+                message:
+                    err.response?.data?.message || "Error deleting lecture",
             });
         }
     }
@@ -58,15 +59,17 @@ export default function LectureTable() {
     }, []);
     return (
         <div className="p-6 w-full">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold">Lectures List</h2>
-            <button
+            <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-semibold">Lectures List</h2>
+                <button
                     className="btn btn-accent w-[200px]"
-                    onClick={() => window.location.href = `/admin/${admin.id}`}
+                    onClick={() =>
+                        (window.location.href = `/admin/${admin.id}`)
+                    }
                 >
                     Admin Panel
                 </button>
-          </div>
+            </div>
 
             <div className="overflow-x-auto shadow rounded-lg">
                 <table className="min-w-full text-sm text-left border border-gray-200">

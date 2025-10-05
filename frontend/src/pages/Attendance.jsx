@@ -29,14 +29,14 @@ export default function Attendance() {
                 const locationData = await res.json();
                 latitude = locationData.latitude;
                 longitude = locationData.longitude;
-                console.log("Latitude:", latitude, "Longitude:", longitude);
+                // console.log("Latitude:", latitude, "Longitude:", longitude);
             } catch (err) {
                 console.error("Error fetching location:", err);
             }
 
             let token = Cookies.get("token");
             let className = window.location.pathname.split("/").pop();
-            console.log(className);
+            // console.log(className);
             let deviceId = getDeviceId();
             let studentId = user.id;
             let data = {
@@ -60,7 +60,7 @@ export default function Attendance() {
                 config
             );
 
-            console.log("✅ Attendance submitted:", res.data);
+            // console.log("✅ Attendance submitted:", res.data);
             setAlert({
                     visible: true,
                     type: "success",
@@ -69,9 +69,9 @@ export default function Attendance() {
                 // navigate to user page
             nav(`/student/${user.id}`);
         } catch (err) {
-            console.log(
-                err.response?.data.message
-            );
+            // console.log(
+            //     err.response?.data.message
+            // );
             setAlert({
                     visible: true,
                     type: "danger",

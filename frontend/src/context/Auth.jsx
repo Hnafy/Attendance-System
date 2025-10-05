@@ -16,9 +16,8 @@ export function AuthProvider({ children }) {
     });
     const [admin, setAdmin] = useState({});
 
-
     let { setAlert } = useAlert();
-    let {setLoading} = useLoading()
+    let { setLoading } = useLoading();
 
     // check token on first load
     useEffect(() => {
@@ -27,7 +26,7 @@ export function AuthProvider({ children }) {
             if (!token) return;
 
             try {
-                setLoading(true)
+                setLoading(true);
                 // verify token to get userId
                 const verifyRes = await axios.get(
                     `${import.meta.env.VITE_BASE_URL}/students/verify`,
@@ -45,7 +44,7 @@ export function AuthProvider({ children }) {
                         { headers: { token }, withCredentials: true }
                     );
                     setUser(userRes.data);
-                }else{
+                } else {
                     // fetch full user profile
                     const userRes = await axios.get(
                         `${
@@ -66,19 +65,19 @@ export function AuthProvider({ children }) {
                     attendances: [],
                 });
                 setAdmin({}); // Clear admin state on error
-            }finally {
-                setLoading(false)
+            } finally {
+                setLoading(false);
             }
         };
 
         initAuth();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-    console.log(user);
+    // console.log(user);
 
     const login = async (token, userId) => {
         try {
-            setLoading(true)
+            setLoading(true);
             // save token in cookie
             Cookies.set("token", token, {
                 expires: 30, // 7 days
@@ -86,7 +85,7 @@ export function AuthProvider({ children }) {
                 secure: true, // only on HTTPS (Vercel is HTTPS, so fine)
                 sameSite: "strict", // adjust if you call API from another domain
             });
-            
+
             // First verify the token to get user data
             const verifyRes = await axios.get(
                 `${import.meta.env.VITE_BASE_URL}/students/verify`,
@@ -108,7 +107,9 @@ export function AuthProvider({ children }) {
                 });
             } else {
                 const res = await axios.get(
-                    `${import.meta.env.VITE_BASE_URL}/students/attendance?studentId=${userId}`,
+                    `${
+                        import.meta.env.VITE_BASE_URL
+                    }/students/attendance?studentId=${userId}`,
                     { headers: { token }, withCredentials: true }
                 );
                 setUser(res.data);
@@ -125,8 +126,8 @@ export function AuthProvider({ children }) {
                 type: "danger",
                 message: "Login failed. Please try again.",
             });
-        }finally { 
-            setLoading(false)
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -146,7 +147,7 @@ export function AuthProvider({ children }) {
     // };
 
     return (
-        <AuthContext.Provider value={{ user, setUser, login,admin }}>
+        <AuthContext.Provider value={{ user, setUser, login, admin }}>
             {children}
         </AuthContext.Provider>
     );

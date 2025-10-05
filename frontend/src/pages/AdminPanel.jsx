@@ -31,7 +31,8 @@ export default function AdminPanel() {
     async function updateStatus(id) {
         try {
             let res = await axios.put(
-                `${import.meta.env.VITE_BASE_URL}/attendance/${id}`,{},
+                `${import.meta.env.VITE_BASE_URL}/attendance/${id}`,
+                {},
                 { headers: { token: Cookies.get("token") } }
             );
             setUser((prevUser) =>
@@ -45,7 +46,7 @@ export default function AdminPanel() {
                 message: res.data.msg,
             });
         } catch (err) {
-            console.log(err);
+            // console.log(err);
             setAlert({
                 visible: true,
                 type: "danger",

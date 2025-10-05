@@ -55,7 +55,7 @@ export default function Dialog() {
                     { headers: { token: Cookies.get("token") } }
                 );
                 setLectures((prevLectures) => [...prevLectures, res.data.data]);
-                console.log(res.data);
+                // console.log(res.data);
                 setAlert({
                     visible: true,
                     type: "success",
@@ -68,7 +68,7 @@ export default function Dialog() {
                     startTime: "",
                 });
             } catch (err) {
-                console.log(err);
+                // console.log(err);
                 setAlert({
                     visible: true,
                     type: "danger",
@@ -99,7 +99,7 @@ export default function Dialog() {
                     startTime: "",
                 });
             } catch (err) {
-                console.log(err);
+                // console.log(err);
                 setAlert({
                     visible: true,
                     type: "danger",
@@ -167,16 +167,14 @@ export default function Dialog() {
                         <label className="block text-sm font-medium mb-1">
                             Start Time
                         </label>
-                                                <input
-                                                        type="datetime-local"
-                                                        name="startTime"
-                                                        value={isoToLocalInput(formData.startTime)}
-                                                        onChange={handleChange}
-                                                        required
-                                                        className="w-full border rounded-lg px-3 py-2 outline-none focus:ring focus:ring-blue-300"
-                                                />
-
-                            
+                        <input
+                            type="datetime-local"
+                            name="startTime"
+                            value={isoToLocalInput(formData.startTime)}
+                            onChange={handleChange}
+                            required
+                            className="w-full border rounded-lg px-3 py-2 outline-none focus:ring focus:ring-blue-300"
+                        />
                     </div>
 
                     <div className="flex justify-end space-x-2 pt-3">
