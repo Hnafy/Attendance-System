@@ -6,6 +6,9 @@ import db from './db.js'
 import lecture from './routes/lecture.js'
 import professor from './routes/professor.js'
 import attendance from './routes/attendance.js'
+import helmet from 'helmet';
+import hpp from 'hpp';
+import rateLimit from 'express-rate-limit';
 
 // connect to database
 db()
@@ -13,6 +16,7 @@ dotenv.config()
 
 let app = express()
 
+app.set("trust proxy", 1);
 // Middleware
 app.use(cors({
   origin: [
@@ -27,6 +31,14 @@ app.use(cors({
 }));
 
 app.use(express.json())
+app.use(helmet());
+app.use(hpp());
+
+app.use(rateLimit({
+  windowMs: 10 * 60 * 1000, // 10 minutes
+  max: 200
+}));
+
 
 
 // routes
