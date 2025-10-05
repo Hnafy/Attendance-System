@@ -55,7 +55,7 @@ export default function Attendance() {
             };
 
             const res = await axios.post(
-                `http://localhost:3000/api/attendance/${className}`,
+                `${import.meta.env.VITE_BASE_URL}/attendance/${className}`,
                 data,
                 config
             );
