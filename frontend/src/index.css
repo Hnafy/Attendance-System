@@ -117,46 +117,6 @@ body {
     --color-success: #00b894; /* Harmonized green */
     --color-error: #e74c3c; /* Contrasting red */
     --color-warning: #f39c12; /* Warm amber */
-    /* 🔤 Typography */
-    --font-family-base: Inter, Cairo, sans-serif;
-
-    --text-xs: 0.75rem; /* 12px */
-    --text-sm: 0.875rem; /* 14px */
-    --text-base: 1rem; /* 16px */
-    --text-lg: 1.125rem; /* 18px */
-    --text-xl: 1.25rem; /* 20px */
-    --text-2xl: 1.5rem; /* 24px */
-    --text-3xl: 1.875rem; /* 30px */
-
-    --font-weight-light: 300;
-    --font-weight-normal: 400;
-    --font-weight-medium: 500;
-    --font-weight-bold: 700;
-
-    --leading-tight: 1.25;
-    --leading-normal: 1.5;
-    --leading-relaxed: 1.75;
-
-    /* 📐 Spacing */
-    --spacing-1: 0.25rem;
-    --spacing-2: 0.5rem;
-    --spacing-3: 0.75rem;
-    --spacing-4: 1rem;
-    --spacing-6: 1.5rem;
-    --spacing-8: 2rem;
-    --spacing-12: 3rem;
-
-    /* 📱 Screens */
-    --breakpoint-sm: 640px;
-    --breakpoint-md: 768px;
-    --breakpoint-lg: 1024px;
-    --breakpoint-xl: 1280px;
-
-    /* 🎨 Radius */
-    --radius-md: 0.375rem;
-    --radius-lg: 0.5rem;
-    --radius-xl: 0.75rem;
-    --radius-2xl: 1rem;
 }
 
 /* 🌙 Dark Mode */
@@ -174,6 +134,10 @@ body {
     --color-success: #06d6a0; /* Bright success tone */
     --color-error: #ef476f; /* Strong pinkish-red error */
     --color-warning: #ffd166; /* Warm yellow for warnings */
+}
+body {
+    background-color: var(--color-background);
+    color: var(--color-text);
 }
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {

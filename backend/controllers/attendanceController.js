@@ -31,7 +31,8 @@ const getAllAttendance = async (req, res) => {
     const result = await attendanceModel
       .find()
       .populate("studentId")
-      .populate("lectureId");
+      .populate("lectureId")
+      .sort({ createdAt: -1 });
 
     if (!result) {
       return res.status(404).json({ message: "No attendance record found" });

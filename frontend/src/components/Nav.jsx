@@ -3,11 +3,13 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import Cookies from "js-cookie";
 import { useAuth } from "../context/Auth";
+import { useTheme } from "../context/useTheme";
 
 export default function Nav() {
     const location = useLocation();
     const [activePage, setActivePage] = useState(location.pathname);
     const { user } = useAuth();
+    const { toggleTheme, isDark } = useTheme();
     const token = Cookies.get("token");
 
     useEffect(() => {
@@ -42,6 +44,12 @@ export default function Nav() {
                             AdminPanel
                         </Link>
                     )}
+                    <button
+                        onClick={toggleTheme}
+                        className="p-2 rounded-full cursor-pointer hover:bg-surface transition-colors"
+                    >
+                        {isDark ? "🌞" : "🌙"}
+                    </button>
                     <h2>{user.name}</h2>
                 </div>
             )}

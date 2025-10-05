@@ -124,7 +124,7 @@ export default function Dialog() {
             />
             {/* Dialog Content */}
             <div
-                className={`bg-white rounded-xl shadow-lg w-full max-w-md p-6 transform transition-all duration-300 ease-in-out relative ${
+                className={`text-text bg-background rounded-xl shadow-lg w-full max-w-md p-6 transform transition-all duration-300 ease-in-out relative ${
                     dialog
                         ? "translate-y-0 opacity-100 scale-100"
                         : "translate-y-4 opacity-0 scale-95"
@@ -183,7 +183,7 @@ export default function Dialog() {
                         <button
                             type="button"
                             onClick={() => setDialog(false)}
-                            className="cursor-pointer px-4 py-2 rounded bg-gray-200 hover:bg-gray-300"
+                            className="cursor-pointer px-4 py-2 rounded"
                         >
                             Cancel
                         </button>

@@ -70,7 +70,7 @@ export default function LectureTable() {
 
             <div className="overflow-x-auto shadow rounded-lg">
                 <table className="min-w-full text-sm text-left border border-gray-200">
-                    <thead className="bg-gray-100 text-gray-700 uppercase text-xs">
+                    <thead className="bg-accent text-gray-700 uppercase text-xs">
                         <tr>
                             <th className="px-4 py-2 border">#</th>
                             <th className="px-4 py-2 border">Lecture Name</th>
@@ -87,12 +87,12 @@ export default function LectureTable() {
                         {lectures.map((lecture, index) => (
                             <tr
                                 key={lecture._id}
-                                className="border-b hover:bg-gray-50 transition"
+                                className="border-b hover:bg-text/10 transition text-text"
                             >
                                 <td className="px-4 py-2 border">
                                     {index + 1}
                                 </td>
-                                <td className="px-4 py-2 border font-medium text-gray-900">
+                                <td className="px-4 py-2 border font-medium">
                                     {lecture.lectureName}
                                 </td>
                                 <td className="px-4 py-2 border">

@@ -21,7 +21,7 @@ function App() {
     return (
         <>
             {/* container */}
-            <div className=" background min-h-screen items-start text-text w-full flex flex-col px-20">
+            <div className=" bg-background min-h-screen items-start text-text w-full flex flex-col px-20">
                 <AlertProvider>
                     <AuthProvider>
                         <LecturesProvider>
