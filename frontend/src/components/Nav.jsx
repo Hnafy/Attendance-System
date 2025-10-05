@@ -29,30 +29,32 @@ export default function Nav() {
             {/* line image */}
             <div className="bg-[url(/Line-8.png)] w-full h-[25px] absolute bottom-[15px] bg-no-repeat bg-contain"></div>
 
-            {token && (
-                <div className="flex items-center text-xs gap-1 md:text-xl md:gap-5">
-                    {user && user.isAdmin && (
-                        <Link
-                            to="/AdminPanel"
-                            onClick={() => setActivePage("/AdminPanel")}
-                            className={
-                                activePage === "/AdminPanel"
-                                    ? "active hidden md:block"
-                                    : "hidden md:block"
-                            }
-                        >
-                            AdminPanel
-                        </Link>
-                    )}
-                    <button
-                        onClick={toggleTheme}
-                        className="p-2 rounded-full cursor-pointer hover:bg-surface transition-colors"
-                    >
-                        {isDark ? "🌞" : "🌙"}
-                    </button>
-                    <h2>{user.name}</h2>
-                </div>
-            )}
+            <div className="flex items-center text-xs gap-1 md:text-xl md:gap-5">
+                {token && (
+                    <>
+                        {user && user.isAdmin && (
+                            <Link
+                                to="/AdminPanel"
+                                onClick={() => setActivePage("/AdminPanel")}
+                                className={
+                                    activePage === "/AdminPanel"
+                                        ? "active hidden md:block"
+                                        : "hidden md:block"
+                                }
+                            >
+                                AdminPanel
+                            </Link>
+                        )}
+                        <h2>{user.name}</h2>
+                    </>
+                )}
+                <button
+                    onClick={toggleTheme}
+                    className="p-2 rounded-full cursor-pointer hover:bg-surface transition-colors"
+                >
+                    {isDark ? "🌞" : "🌙"}
+                </button>
+            </div>
         </div>
     );
 }
