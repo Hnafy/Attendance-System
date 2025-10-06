@@ -22,18 +22,22 @@ export default function Attendance() {
     async function submitAttendance() {
         try {
             let longitude = null;
-            let latitude = null;
-            
-            try {
-                const res = await fetch("https://ipapi.co/json/");
-                const locationData = await res.json();
-                latitude = locationData.latitude;
-                longitude = locationData.longitude;
-                // console.log("Latitude:", latitude, "Longitude:", longitude);
-            } catch (err) {
-                console.error("Error fetching location:", err);
-            }
+let latitude = null;
 
+if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      latitude = position.coords.latitude;
+      longitude = position.coords.longitude;
+      console.log("Latitude:", latitude, "Longitude:", longitude);
+    },
+    (error) => {
+      console.error("Error getting location:", error.message);
+    }
+  );
+} else {
+  console.error("Geolocation is not supported by this browser.");
+}
             let token = Cookies.get("token");
             let className = window.location.pathname.split("/").pop();
             // console.log(className);
