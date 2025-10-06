@@ -45,7 +45,9 @@ export default function Nav() {
                                 AdminPanel
                             </Link>
                         )}
-                        <h2>{user.name}</h2>
+                        <Link to={`/student/${user.id}`}>
+                            <h2>{user.name}</h2>
+                        </Link>
                     </>
                 )}
                 <button

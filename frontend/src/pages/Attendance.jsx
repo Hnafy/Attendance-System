@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import { useAuth } from "../context/Auth";
 import { useAlert } from "../context/Alert";
 import { useNavigate } from "react-router-dom";
+import { useLoading } from "../context/Loading";
 
 function getDeviceId() {
     let deviceId = localStorage.getItem("deviceId");
@@ -16,22 +17,22 @@ function getDeviceId() {
 
 export default function Attendance() {
     const { user } = useAuth();
-    let {setAlert} = useAlert()
-    let nav = useNavigate()
+    let { setAlert } = useAlert();
+    let nav = useNavigate();
+    let {setLoading} = useLoading();
 
     async function submitAttendance() {
         try {
-            let longitude = null;
-            let latitude = null;
-            
-            try {
-                const res = await fetch("https://ipapi.co/json/");
-                const locationData = await res.json();
-                latitude = locationData.latitude;
-                longitude = locationData.longitude;
-                // console.log("Latitude:", latitude, "Longitude:", longitude);
-            } catch (err) {
-                console.error("Error fetching location:", err);
+            setLoading(true);
+            async function getLocation() {
+                return new Promise((resolve, reject) => {
+                    if (!navigator.geolocation)
+                        return reject("Geolocation not supported");
+                    navigator.geolocation.getCurrentPosition(
+                        (pos) => resolve(pos.coords),
+                        (err) => reject(err)
+                    );
+                });
             }
 
             let token = Cookies.get("token");
@@ -39,6 +40,17 @@ export default function Attendance() {
             // console.log(className);
             let deviceId = getDeviceId();
             let studentId = user.id;
+            let latitude = null;
+            let longitude = null;
+
+            try {
+                const coords = await getLocation();
+                latitude = coords.latitude;
+                longitude = coords.longitude;
+                console.log("Latitude:", latitude, "Longitude:", longitude);
+            } catch (err) {
+                console.error("Error getting location:", err);
+            }
             let data = {
                 deviceId,
                 studentId,
@@ -62,21 +74,23 @@ export default function Attendance() {
 
             // console.log("✅ Attendance submitted:", res.data);
             setAlert({
-                    visible: true,
-                    type: "success",
-                    message: res.data.message,
-                });
-                // navigate to user page
+                visible: true,
+                type: "success",
+                message: res.data.message,
+            });
+            // navigate to user page
             nav(`/student/${user.id}`);
         } catch (err) {
             // console.log(
             //     err.response?.data.message
             // );
             setAlert({
-                    visible: true,
-                    type: "danger",
-                    message: err.response?.data.message,
-                });
+                visible: true,
+                type: "danger",
+                message: err.response?.data.message,
+            });
+        }finally{
+            setLoading(false);
         }
     }
     return (

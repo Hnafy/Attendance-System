@@ -14,7 +14,8 @@ const getAttendance = async (req, res) => {
     const result = await attendanceModel
       .find({ studentId })
       .populate("studentId")
-      .populate("lectureId");
+      .populate("lectureId")
+      .sort({ createdAt: -1 });
 
     if (!result) {
       return res.status(404).json({ message: "No attendance record found" });
@@ -107,8 +108,11 @@ const submitAttendance = async (req, res) => {
 
     // 🔹 Check location (optional)
     if (lat && long) {
-      const uniLat = 30.36938;
-      const uniLng = 30.49762;
+      const uniLat = 30.41375;
+      const uniLng = 30.5368817;
+      // const uniLat = 30.42883; bajor
+      // const uniLng = 31.03894;
+
       const maxDistance = 0.5; // 500 m
       const distance = getDistanceFromLatLonInKm(lat, long, uniLat, uniLng);
       if (distance > maxDistance) status = "outside";
