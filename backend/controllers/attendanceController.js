@@ -107,8 +107,9 @@ const submitAttendance = async (req, res) => {
 
     // 🔹 Check location (optional)
     if (lat && long) {
-      const uniLat = 30.36938;
-      const uniLng = 30.49762;
+      const uniLat = 30.41375;  
+      const uniLng = 30.5368817;
+
       const maxDistance = 0.5; // 500 m
       const distance = getDistanceFromLatLonInKm(lat, long, uniLat, uniLng);
       if (distance > maxDistance) status = "outside";
