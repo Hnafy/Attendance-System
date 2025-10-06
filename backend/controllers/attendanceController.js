@@ -108,10 +108,12 @@ const submitAttendance = async (req, res) => {
 
     // 🔹 Check location (optional)
     if (lat && long) {
-      const uniLat = 30.41375;
-      const uniLng = 30.5368817;
+      // const uniLat = 30.41375; sadat
+      // const uniLng = 30.5368817;
       // const uniLat = 30.42883; bajor
       // const uniLng = 31.03894;
+      const uniLat = 30.5583271;
+      const uniLng = 31.0206183;
 
       const maxDistance = 0.5; // 500 m
       const distance = getDistanceFromLatLonInKm(lat, long, uniLat, uniLng);
