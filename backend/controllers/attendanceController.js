@@ -47,18 +47,23 @@ const getAllAttendance = async (req, res) => {
 
 
 // 📘 Helper: calculate distance between two coordinates
-function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+function getDistancesFromLatLonInKm(lat1, lon1, locations) {
   const R = 6371; // Earth's radius in km
-  const dLat = ((lat2 - lat1) * Math.PI) / 180;
-  const dLon = ((lon2 - lon1) * Math.PI) / 180;
-  const a =
-    Math.sin(dLat / 2) ** 2 +
-    Math.cos((lat1 * Math.PI) / 180) *
-      Math.cos((lat2 * Math.PI) / 180) *
-      Math.sin(dLon / 2) ** 2;
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  return R * c;
+
+  return locations.map(({ lat, lon }) => {
+    const dLat = ((lat - lat1) * Math.PI) / 180;
+    const dLon = ((lon - lon1) * Math.PI) / 180;
+    const a =
+      Math.sin(dLat / 2) ** 2 +
+      Math.cos((lat1 * Math.PI) / 180) *
+        Math.cos((lat * Math.PI) / 180) *
+        Math.sin(dLon / 2) ** 2;
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c;
+    return { lat, lon, distance };
+  });
 }
+
 
 // 📘 Submit attendance
 const submitAttendance = async (req, res) => {
@@ -112,11 +117,16 @@ const submitAttendance = async (req, res) => {
       // const uniLng = 30.5368817;
       // const uniLat = 30.42883; bajor
       // const uniLng = 31.03894;
-      const uniLat = 30.5583271;
-      const uniLng = 31.0206183;
+      // const uniLat = 30.5583271; sheben
+      // const uniLng = 31.0206183;
+      const places = [
+        { lat: 30.42883, lon: 31.03894 }, // bajor
+        { lat: 30.5583271, lon: 31.0206183 }, // sheben
+        { lat: 30.41375, lon: 30.5368817 }, // sadat
+      ];
 
       const maxDistance = 0.5; // 500 m
-      const distance = getDistanceFromLatLonInKm(lat, long, uniLat, uniLng);
+      const distance = getDistancesFromLatLonInKm(lat, long, places);
       if (distance > maxDistance) status = "outside";
     }
 
