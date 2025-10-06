@@ -35,6 +35,20 @@ export default function Attendance() {
                 });
             }
 
+        if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+            latitude = position.coords.latitude;
+            longitude = position.coords.longitude;
+            console.log("Latitude:", latitude, "Longitude:", longitude);
+            },
+            (error) => {
+            console.error("Error getting location:", error.message);
+            }
+        );
+        } else {
+        console.error("Geolocation is not supported by this browser.");
+        }
             let token = Cookies.get("token");
             let className = window.location.pathname.split("/").pop();
             // console.log(className);
