@@ -15,13 +15,14 @@ import Attendance from "./pages/Attendance";
 import AdminRoute from "./components/AdminRoute";
 import Lectures from "./pages/Lectures";
 import { LecturesProvider } from "./context/lectures";
+import GetClassName from "./pages/GetClassName";
 
 function App() {
     let { loading } = useLoading();
     return (
         <>
             {/* container */}
-            <div className=" bg-background min-h-screen items-start text-text w-full flex flex-col px-20">
+            <div className=" bg-background min-h-screen items-start text-text w-full flex flex-col px-5 md:px-20">
                 <AlertProvider>
                     <AuthProvider>
                         <LecturesProvider>
@@ -39,6 +40,14 @@ function App() {
                                         element={
                                             <ProtectedRoute>
                                                 <Profile />
+                                            </ProtectedRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path="/attendance"
+                                        element={
+                                            <ProtectedRoute>
+                                                <GetClassName />
                                             </ProtectedRoute>
                                         }
                                     />

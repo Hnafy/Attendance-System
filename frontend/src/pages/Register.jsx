@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/Auth";
 import { useAlert } from "../context/Alert";
 
@@ -14,9 +14,7 @@ export default function Register() {
     });
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
-    const location = useLocation();
     const navigate = useNavigate();
-    // let nav = useNavigate();
     let { login } = useAuth();
     const baseUrl = import.meta.env.VITE_BASE_URL;
     // console.log(baseUrl);
@@ -54,8 +52,7 @@ export default function Register() {
                 login(res.data.token, res.data.data.id);
                 // navigate to user page
                 // nav(`/student/${res.data.data.id}`);
-                const from = location.state?.from?.pathname || "/";
-                navigate(from, { replace: true });
+                navigate(`/attendance`)
 
                 setAccept(false);
             } catch (err) {
