@@ -5,6 +5,7 @@ import { useLectures } from "../context/lectures";
 import { useAlert } from "../context/Alert";
 import Cookies from "js-cookie";
 import { useAuth } from "../context/Auth";
+import AttendanceButtons from "../components/AttendanceButtons";
 
 export default function LectureTable() {
     let { setDialog, setMood, setId } = useDialog();
@@ -78,8 +79,8 @@ export default function LectureTable() {
                             <th className="px-4 py-2 border">#</th>
                             <th className="px-4 py-2 border">Lecture Name</th>
                             <th className="px-4 py-2 border">Class</th>
-                            <th className="px-4 py-2 border">Start Time</th>
-                            <th className="px-4 py-2 border">End Time</th>
+                            {/* <th className="px-4 py-2 border">Start Time</th>
+                            <th className="px-4 py-2 border">End Time</th> */}
                             <th className="px-4 py-2 border text-center">
                                 Actions
                             </th>
@@ -101,15 +102,18 @@ export default function LectureTable() {
                                 <td className="px-4 py-2 border">
                                     {lecture.className}
                                 </td>
-                                <td className="px-4 py-2 border">
+                                {/* <td className="px-4 py-2 border">
                                     {new Date(
                                         lecture.startTime
                                     ).toLocaleString()}
                                 </td>
                                 <td className="px-4 py-2 border">
                                     {new Date(lecture.endTime).toLocaleString()}
-                                </td>
+                                </td> */}
                                 <td className="px-4 py-2 border text-center">
+                                    <div className="flex flex-col items-center gap-2">
+
+                                    <div>
                                     <button
                                         onClick={() => onUpdate(lecture._id)}
                                         className="bg-blue-500 cursor-pointer hover:bg-blue-600 text-white px-3 py-1 rounded mr-2 transition"
@@ -122,6 +126,9 @@ export default function LectureTable() {
                                     >
                                         Delete
                                     </button>
+                                    </div>
+                                    <AttendanceButtons lectureId={lecture._id} />
+                                    </div>
                                 </td>
                             </tr>
                         ))}

@@ -1,4 +1,5 @@
 import attendanceModel from "../models/attendanceModel.js";
+import attendanceSessionModel from "../models/attendanceSessionModel.js";
 import {lectureModel} from "../models/lectureModel.js";
 
 
@@ -65,7 +66,6 @@ function getDistancesFromLatLonInKm(lat1, lon1, locations) {
 }
 
 
-// 📘 Submit attendance
 const submitAttendance = async (req, res) => {
   try {
     const { studentId, deviceId, lat, long } = req.body;
@@ -77,34 +77,42 @@ const submitAttendance = async (req, res) => {
     }
 
     // 🔹 Find the current lecture for this class
-    const lecture = await lectureModel.findOne({
-      className,
-      startTime: { $lte: now },
-      endTime: { $gte: now },
-    });
-
+    // First, find the lecture for this class
+    const lecture = await lectureModel.findOne({ className: className });
     if (!lecture) {
-      return res.status(400).json({ message: "you don't have any lecture now" });
+      return res.status(404).json({ message: "No lecture found for this class" });
+    }
+
+    // Then find an active session for this lecture
+    const session = await attendanceSessionModel
+      .findOne({ 
+        isActive: true,
+        lectureId: lecture._id
+      })
+      .populate("lectureId");
+
+    if (!session) {
+      return res.status(404).json({ message: "No active session for this class" });
     }
 
     // 🔹 Check if this student already attended this lecture
     const alreadyAttended = await attendanceModel.findOne({
       studentId,
-      lectureId: lecture._id,
+      lectureId: session.lectureId._id,
     });
 
     if (alreadyAttended) {
-      return res.status(400).json({ message: "you already took attendance for this lecture" });
+      return res.status(400).json({ message: "You already took attendance for this lecture" });
     }
 
-    // 🔹 Determine status
+    // 🔹 Determine attendance status
     let status = "present";
 
-    // Late (>30 minutes)
-    const diffMinutes = (now - lecture.startTime) / (1000 * 60);
+    // Check if late (>30 minutes)
+    const diffMinutes = (now - new Date(lecture.startTime)) / (1000 * 60);
     if (diffMinutes > 30) status = "late";
 
-    // Same device used before in this lecture
+    // Check if same device used before in this lecture
     const sameDevice = await attendanceModel.findOne({
       deviceId,
       lectureId: lecture._id,
@@ -113,27 +121,22 @@ const submitAttendance = async (req, res) => {
 
     // 🔹 Check location (optional)
     if (lat && long) {
-      // const uniLat = 30.41375; sadat
-      // const uniLng = 30.5368817;
-      // const uniLat = 30.42883; bajor
-      // const uniLng = 31.03894;
-      // const uniLat = 30.5583271; sheben
-      // const uniLng = 31.0206183;
       const places = [
-        { lat: 30.42883, lon: 31.03894 }, // bajor
-        { lat: 30.5583271, lon: 31.0206183 }, // sheben
-        { lat: 30.41375, lon: 30.5368817 }, // sadat
+        { lat: 30.42883, lon: 31.03894 }, // Bajor
+        { lat: 30.5583271, lon: 31.0206183 }, // Sheben
+        { lat: 30.41375, lon: 30.5368817 }, // Sadat
       ];
 
-      const maxDistance = 0.5; // 500 m
+      const maxDistance = 0.5; // 500 meters
       const distance = getDistancesFromLatLonInKm(lat, long, places);
+
       if (distance > maxDistance) status = "outside";
     }
 
-    // 🔹 Save new attendance
+    // 🔹 Save attendance
     const attendance = await attendanceModel.create({
       studentId,
-      lectureId: lecture._id,
+      lectureId: session.lectureId._id,
       className,
       status,
       deviceId,
@@ -143,13 +146,14 @@ const submitAttendance = async (req, res) => {
     });
 
     res.status(201).json({
-      message: "attendance recorded successfully",
+      message: "Attendance recorded successfully",
       attendance,
     });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
+
 
 let presentStudent = async(req,res)=>{
   try {
