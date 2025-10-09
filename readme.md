@@ -15,7 +15,9 @@
 
 </div>
 
-
+<p>
+   📘 <a href="https://documenter.getpostman.com/view/32173598/2sB3QKrV3d" target="_blank"><strong>API Documentation (Postman)</strong></a>
+</p>
 
 
   <h3 align="center">Smart Attendance Management System</h3>
