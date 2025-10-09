@@ -6,10 +6,12 @@ import { useAlert } from "../context/Alert";
 import Cookies from "js-cookie";
 import { useAuth } from "../context/Auth";
 import AttendanceButtons from "../components/AttendanceButtons";
+import { useLoading } from "../context/Loading";
 
 export default function LectureTable() {
     let { setDialog, setMood, setId } = useDialog();
     let { lectures, setLectures } = useLectures();
+    let {setLoading} = useLoading()
     let { setAlert } = useAlert();
     let { admin } = useAuth();
 
@@ -49,15 +51,26 @@ export default function LectureTable() {
         setMood("add");
     }
     useEffect(() => {
-        async function fetchDate() {
-            let res = await axios.get(
-                `${import.meta.env.VITE_BASE_URL}/lectures`
+        // if admin not ready yet, do nothing
+        if (!admin || !admin.id) return;
+
+        const fetchData = async () => {
+            try {
+            setLoading(true); // start loading before fetching
+            const res = await axios.get(
+                `${import.meta.env.VITE_BASE_URL}/lectures/${admin.id}`,
+                { headers: { token: Cookies.get("token") } }
             );
             setLectures(res.data);
-        }
-        fetchDate();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+            } catch (err) {
+            console.error("Error fetching lectures:", err);
+            } finally {
+            setLoading(false); // stop loading after fetch completes
+            }
+        };
+
+        fetchData();
+        }, [admin]);
     return (
         <div className="p-6 w-full">
             <div className="flex justify-between items-center mb-4">

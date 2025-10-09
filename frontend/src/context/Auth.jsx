@@ -21,6 +21,7 @@ export function AuthProvider({ children }) {
 
     // check token on first load
     useEffect(() => {
+        
         const initAuth = async () => {
             const token = Cookies.get("token");
             if (!token) return;
@@ -40,7 +41,7 @@ export function AuthProvider({ children }) {
                     const userRes = await axios.get(
                         `${
                             import.meta.env.VITE_BASE_URL
-                        }/attendance/allStudents`,
+                        }/attendance/allStudents/${userDecoded.user.id}`,
                         { headers: { token }, withCredentials: true }
                     );
                     setUser(userRes.data);
@@ -69,7 +70,6 @@ export function AuthProvider({ children }) {
                 setLoading(false);
             }
         };
-
         initAuth();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -96,7 +96,7 @@ export function AuthProvider({ children }) {
             // Check if the user is an admin from the verification response
             if (verifyRes.data.user.isAdmin) {
                 const res = await axios.get(
-                    `${import.meta.env.VITE_BASE_URL}/attendance/allStudents`,
+                    `${import.meta.env.VITE_BASE_URL}/attendance/allStudents/${verifyRes.data.user.id}`,
                     { headers: { token }, withCredentials: true }
                 );
                 setUser(res.data);

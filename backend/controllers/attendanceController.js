@@ -31,7 +31,7 @@ const getAttendance = async (req, res) => {
 const getAllAttendance = async (req, res) => {
   try {
     const result = await attendanceModel
-      .find()
+      .find({professorId:req.user.id})
       .populate("studentId")
       .populate("lectureId")
       .sort({ createdAt: -1 });
@@ -137,6 +137,7 @@ const submitAttendance = async (req, res) => {
     const attendance = await attendanceModel.create({
       studentId,
       lectureId: session.lectureId._id,
+      professorId: lecture.professorId,
       className,
       status,
       deviceId,

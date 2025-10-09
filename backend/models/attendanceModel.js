@@ -12,6 +12,10 @@ let attendance = mongoose.Schema({
     ref:"Lecture",
     require:true
   },
+  professorId: {
+    type:mongoose.Schema.Types.ObjectId,
+    ref:"Professor",
+  },
   status: { type: String, enum: ["present", "late", "suspicious", "outside", "absent"] ,default:"absent" },
   time: { type: Date, default: Date.now },
   deviceId:String,

@@ -5,7 +5,7 @@ dotenv.config();
 
 let getLectures = async (req, res) => {
     try {
-        let result = await lectureModel.find();
+        let result = await lectureModel.find({professorId:req.user.id});
         res.json(result);
     } catch (err) {
         res.send(err.message);
@@ -24,6 +24,7 @@ let postLecture = async (req, res) => {
         let storagePost = await lectureModel.create({
             lectureName: req.body.lectureName,
             className: req.body.className,
+            professorId: req.user.id,
             // startTime: req.body.startTime, // <input type="datetime-local" name="birthDaTime">
             // endTime: new Date(new Date(req.body.startTime).getTime() + 2 * 60 * 60 * 1000).toISOString(),
         });

@@ -41,4 +41,13 @@ let TableAuth = (req, res, next) => {
     }
 };
 
-export { verifyToken, isAdmin,authorization,TableAuth };
+let adminIdMatch = [isAdmin,(req, res, next) => {
+    const adminIdFromParams = req.params.id;
+    if (req.user.isAdmin && req.user.id === adminIdFromParams) {
+        next();
+    } else {
+        res.status(403).json({ message: "Admin ID does not match" });
+    }
+}];
+
+export { verifyToken, isAdmin,authorization,TableAuth,adminIdMatch };

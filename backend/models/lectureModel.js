@@ -5,6 +5,7 @@ let lecture = new mongoose.Schema(
     {
         lectureName: { type: String, required: true },
         className: { type: String, required: true },
+        professorId: { type: mongoose.Schema.Types.ObjectId, ref: "Professor", required: true },
         // startTime: { type: Date},
         // endTime: { type: Date},
     }
