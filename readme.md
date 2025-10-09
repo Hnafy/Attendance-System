@@ -2,9 +2,21 @@
 # 📘 Attendance System (MERN Stack)
 
 <div align="center">
-  <a href="https://github.com/ahmednaser">
-    <img src="images/image1" alt="Logo" width="80" height="80">
+
+  <a href="https://github.com/Hnafy/Attendance-System/blob/main/images/image1.png?raw=true">
+    <img src="https://github.com/Hnafy/Attendance-System/blob/main/images/image1.png?raw=true" width="400" alt="Dashboard Screenshot">
   </a>
+
+  <br><br>
+
+  <a href="https://github.com/Hnafy/Attendance-System/blob/main/images/image2.png?raw=true">
+    <img src="https://github.com/Hnafy/Attendance-System/blob/main/images/image2.png?raw=true" width="400" alt="Attendance Page">
+  </a>
+
+</div>
+
+
+
 
   <h3 align="center">Smart Attendance Management System</h3>
 
@@ -14,9 +26,9 @@
     <a href="https://nusc-attendance.netlify.app/"><strong>View Demo »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/Hanfy/Attendance-System/issues/new?labels=bug">Report Bug</a>
+    <a href="https://github.com/Hnafy/Attendance-System/issues/new?labels=bug">Report Bug</a>
     &middot;
-    <a href="https://github.com/Hanfy/Attendance-System/issues/new?labels=enhancement">Request Feature</a>
+    <a href="https://github.com/Hnafy/Attendance-System/issues/new?labels=enhancement">Request Feature</a>
   </p>
 </div>
 
@@ -170,7 +182,7 @@ Once both servers are running:
 ## 📞 Contact
 
 **Ahmed Naser**
-[GitHub](https://github.com/Hanfy) • [X](https://x.com/a7med7530)
+[GitHub](https://github.com/Hnafy) • [X](https://x.com/a7med7530)
 
 ---
 
