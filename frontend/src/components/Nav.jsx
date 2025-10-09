@@ -52,7 +52,7 @@ export default function Nav() {
                 )}
                 <button
                     onClick={toggleTheme}
-                    className="p-2 rounded-full cursor-pointer hover:bg-surface transition-colors"
+                    className="no-print p-2 rounded-full cursor-pointer hover:bg-surface transition-colors"
                 >
                     {isDark ? "🌞" : "🌙"}
                 </button>

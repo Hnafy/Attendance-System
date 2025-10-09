@@ -96,14 +96,22 @@ export default function AdminPanel() {
     return (
         <div className="p-6 w-full">
             <div className="flex justify-between items-center mb-4 flex-wrap gap-3">
+                <div className="flex gap-5">
                 <button
                     className="btn btn-accent"
                     onClick={() => (window.location.href = "/admin/lectures")}
                 >
                     Lectures
                 </button>
+                <button
+                    className="btn btn-primary w-[120px]"
+                    onClick={() => window.print()}
+                >
+                    Print
+                </button>
+                </div>
 
-                <div className="flex flex-wrap gap-3 items-center">
+                <div className="no-print flex flex-wrap gap-3 items-center">
                     <input
                         type="text"
                         placeholder="Search student, class, or lecture..."
@@ -129,8 +137,8 @@ export default function AdminPanel() {
             <h2 className="text-xl font-semibold mb-4">Attendance Records</h2>
 
             <div className="overflow-x-auto shadow rounded-lg">
-                <table className="min-w-full text-sm text-left border border-gray-200">
-                    <thead className="bg-gray-100 text-gray-700 uppercase text-xs">
+                <table className="min-w-full text-sm text-left border border-gray-200 print-text">
+                    <thead className="bg-gray-100 text-gray-700 uppercase text-xs print-text">
                         <tr>
                             <th className="px-4 py-2 border">#</th>
                             <th className="px-4 py-2 border">Student Name</th>

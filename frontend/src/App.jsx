@@ -22,7 +22,7 @@ function App() {
     return (
         <>
             {/* container */}
-            <div className=" bg-background min-h-screen items-start text-text w-full flex flex-col px-5 md:px-20">
+            <div className=" bg-background min-h-screen items-start text-text w-full flex flex-col px-5 print-no-padding md:px-20 md:print-no-padding">
                 <AlertProvider>
                     <AuthProvider>
                         <LecturesProvider>
