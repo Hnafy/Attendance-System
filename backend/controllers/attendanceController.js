@@ -171,4 +171,18 @@ let presentStudent = async(req,res)=>{
       }
 }
 
-export { submitAttendance,getAttendance,getAllAttendance,presentStudent };
+let deleteAttendance = async (req, res) => {
+    try {
+        let existingAttendance = await attendanceModel.findByIdAndDelete(req.params.id);
+        if (!existingAttendance) {
+            return res.status(404).json({ msg: "attendance not found" });
+        }
+
+        res.json({ msg: "attendance Deleted", data: existingAttendance });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+
+export { submitAttendance,getAttendance,getAllAttendance,presentStudent,deleteAttendance };

@@ -92,6 +92,32 @@ export default function AdminPanel() {
     if (loading || !Array.isArray(user)) {
         return <div className="p-6">Loading user data...</div>;
     }
+    async function deleteAttendance(id){
+        try {
+            const res = await axios.delete(
+                `${import.meta.env.VITE_BASE_URL}/attendance/${id}`,
+                { headers: { token: Cookies.get("token") } }
+            );
+
+            setUser((prevUser) =>
+                prevUser.filter((attendance) => attendance._id !== id)
+            );
+
+            setAlert({
+                visible: true,
+                type: "success",
+                message: res.data.msg,
+            });
+        } catch (err) {
+            setAlert({
+                visible: true,
+                type: "danger",
+                message:
+                    err.response?.data?.message ||
+                    "Error Delete attendance",
+            });
+        }
+    }
 
     return (
         <div className="p-6 w-full">
@@ -150,6 +176,7 @@ export default function AdminPanel() {
                             <th className="px-4 py-2 border">Device ID</th>
                             <th className="px-4 py-2 border">Time</th>
                             <th className="px-4 py-2 border">Location</th>
+                            <th className="px-4 py-2 border no-print">Punishment</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -205,6 +232,9 @@ export default function AdminPanel() {
                                                       5
                                                   )}, ${a.long.toFixed(5)}`
                                                 : "-"}
+                                        </td>
+                                        <td className="px-4 py-2 border no-print">
+                                            <button className="btn btn-error" onClick={()=>deleteAttendance(a._id)}>Delete</button>
                                         </td>
                                     </tr>
                                 );

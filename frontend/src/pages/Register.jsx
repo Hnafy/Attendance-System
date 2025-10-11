@@ -27,7 +27,7 @@ export default function Register() {
         if (
             !input.name ||
             !input.email ||
-            input.studentCode.length < 6 ||
+            input.studentCode.length < 3 ||
             input.password.length < 6 ||
             input.password !== input.resetPassword
         ) {
@@ -130,7 +130,7 @@ export default function Register() {
                             className="bg-transparent text-text placeholder-gray-400 outline-none text-sm w-full h-full"
                         />
                     </div>
-                    {input.studentCode.length < 6 && accept ? (
+                    {input.studentCode.length < 3 && accept ? (
                         <p className="text-error text-start">
                             student code is invalid
                         </p>
