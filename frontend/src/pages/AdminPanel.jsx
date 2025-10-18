@@ -4,6 +4,7 @@ import { useLoading } from "../context/Loading";
 import Cookies from "js-cookie";
 import { useAlert } from "../context/Alert";
 import { useState, useMemo } from "react";
+import { useDialog } from "../context/Dialog";
 
 export default function AdminPanel() {
     const { user, setUser } = useAuth();
@@ -12,7 +13,8 @@ export default function AdminPanel() {
 
     const [search, setSearch] = useState("");
     const [statusFilter, setStatusFilter] = useState("all");
-
+    let {setDialog, setMood} = useDialog()
+    
     const getRowColor = (status) => {
         switch (status) {
             case "present":
@@ -119,22 +121,32 @@ export default function AdminPanel() {
         }
     }
 
+    function deleteAllAttendanceDialog(){
+        setMood("alert")
+        setDialog(true)
+    }
+
     return (
         <div className="p-6 w-full">
             <div className="flex justify-between items-center mb-4 flex-wrap gap-3">
-                <div className="flex gap-5">
-                <button
-                    className="btn btn-accent"
-                    onClick={() => (window.location.href = "/admin/lectures")}
-                >
-                    Lectures
-                </button>
-                <button
-                    className="btn btn-primary w-[120px]"
-                    onClick={() => window.print()}
-                >
-                    Print
-                </button>
+                <div className="flex flex-col gap-5 items-center lg:flex-row">
+                    <div className="flex gap-5">
+                    <button
+                        className="btn btn-accent"
+                        onClick={() => (window.location.href = "/admin/lectures")}
+                    >
+                        Lectures
+                    </button>
+                    <button
+                        className="btn btn-primary w-[120px]"
+                        onClick={() => window.print()}
+                    >
+                        Print
+                    </button>
+                    </div>
+                    <div className="w-full">
+                        <button className="btn btn-error w-full" onClick={()=>{deleteAllAttendanceDialog()}}>Clear Attendance</button>
+                    </div>
                 </div>
 
                 <div className="no-print flex flex-wrap gap-3 items-center">

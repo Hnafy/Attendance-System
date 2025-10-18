@@ -4,6 +4,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { useAlert } from "../context/Alert";
 import { useLectures } from "../context/lectures";
+import { useAuth } from "../context/Auth";
 
 export default function Dialog() {
     const [formData, setFormData] = useState({
@@ -15,6 +16,7 @@ export default function Dialog() {
     let { mood, id } = useDialog();
     let { setLectures } = useLectures();
     let { setAlert } = useAlert();
+    const { setUser } = useAuth();
 
     const handleChange = (e) => {
         // If changing startTime (from datetime-local input) convert the local
@@ -109,6 +111,35 @@ export default function Dialog() {
             }
         }
     };
+    async function deleteAllAttendance() {
+        let id = window.location.pathname.split("/").pop();
+        try {
+            const res = await axios.delete(
+                `${
+                    import.meta.env.VITE_BASE_URL
+                }/attendance/allAttendance/${id}`,
+                { headers: { token: Cookies.get("token") } }
+            );
+
+            setUser((prevUser) =>
+                prevUser.filter((attendance) => attendance.professorId !== id)
+            );
+
+            setAlert({
+                visible: true,
+                type: "success",
+                message: res.data.msg,
+            });
+        } catch (err) {
+            setAlert({
+                visible: true,
+                type: "danger",
+                message: err.response.data.msg,
+            });
+        }finally{
+            setDialog(false)
+        }
+    }
 
     return (
         <div
@@ -122,62 +153,26 @@ export default function Dialog() {
                     dialog ? "opacity-40" : "opacity-0"
                 }`}
             />
+
             {/* Dialog Content */}
-            <div
-                className={`text-text bg-background rounded-xl shadow-lg w-full max-w-md p-6 transform transition-all duration-300 ease-in-out relative ${
-                    dialog
-                        ? "translate-y-0 opacity-100 scale-100"
-                        : "translate-y-4 opacity-0 scale-95"
-                }`}
-                onClick={(e) => e.stopPropagation()}
-            >
-                <h2 className="text-xl font-semibold mb-4">
-                    {mood == "update" ? "Update Lecture" : "Add Lecture"}
-                </h2>
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <div>
-                        <label className="block text-sm font-medium mb-1">
-                            Lecture Name
-                        </label>
-                        <input
-                            type="text"
-                            name="lectureName"
-                            value={formData.lectureName}
-                            onChange={handleChange}
-                            required
-                            className="w-full border rounded-lg px-3 py-2 outline-none focus:ring focus:ring-blue-300"
-                        />
-                    </div>
+            {mood === "alert" ? (
+                <div
+                    className={`text-text bg-background rounded-xl shadow-lg w-full max-w-md p-6 transform transition-all duration-300 ease-in-out relative ${
+                        dialog
+                            ? "translate-y-0 opacity-100 scale-100"
+                            : "translate-y-4 opacity-0 scale-95"
+                    }`}
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    <h2 className="text-xl font-semibold mb-4 text-center">
+                        Are you sure you want to delete all attendance?
+                    </h2>
 
-                    <div>
-                        <label className="block text-sm font-medium mb-1">
-                            Class Name
-                        </label>
-                        <input
-                            type="text"
-                            name="className"
-                            value={formData.className}
-                            onChange={handleChange}
-                            required
-                            className="w-full border rounded-lg px-3 py-2 outline-none focus:ring focus:ring-blue-300"
-                        />
-                    </div>
+                    <p className="text-center text-gray-500 mb-6">
+                        This action cannot be undone.
+                    </p>
 
-                    <div>
-                        {/* <label className="block text-sm font-medium mb-1">
-                            Start Time
-                        </label>
-                        <input
-                            type="datetime-local"
-                            name="startTime"
-                            value={isoToLocalInput(formData.startTime)}
-                            onChange={handleChange}
-                            required
-                            className="w-full border rounded-lg px-3 py-2 outline-none focus:ring focus:ring-blue-300"
-                        /> */}
-                    </div>
-
-                    <div className="flex justify-end space-x-2 pt-3">
+                    <div className="flex justify-center space-x-3">
                         <button
                             type="button"
                             onClick={() => setDialog(false)}
@@ -185,15 +180,74 @@ export default function Dialog() {
                         >
                             Cancel
                         </button>
+
                         <button
-                            type="submit"
-                            className="cursor-pointer px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
+                            onClick={deleteAllAttendance}
+                            className="cursor-pointer px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700 transition"
                         >
-                            {mood == "update" ? "Update" : "Add"}
+                            Delete
                         </button>
                     </div>
-                </form>
-            </div>
+                </div>
+            ) : (
+                <div
+                    className={`text-text bg-background rounded-xl shadow-lg w-full max-w-md p-6 transform transition-all duration-300 ease-in-out relative ${
+                        dialog
+                            ? "translate-y-0 opacity-100 scale-100"
+                            : "translate-y-4 opacity-0 scale-95"
+                    }`}
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    <h2 className="text-xl font-semibold mb-4">
+                        {mood === "update" ? "Update Lecture" : "Add Lecture"}
+                    </h2>
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                        <div>
+                            <label className="block text-sm font-medium mb-1">
+                                Lecture Name
+                            </label>
+                            <input
+                                type="text"
+                                name="lectureName"
+                                value={formData.lectureName}
+                                onChange={handleChange}
+                                required
+                                className="w-full border rounded-lg px-3 py-2 outline-none focus:ring focus:ring-blue-300"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium mb-1">
+                                Class Name
+                            </label>
+                            <input
+                                type="text"
+                                name="className"
+                                value={formData.className}
+                                onChange={handleChange}
+                                required
+                                className="w-full border rounded-lg px-3 py-2 outline-none focus:ring focus:ring-blue-300"
+                            />
+                        </div>
+
+                        <div className="flex justify-end space-x-2 pt-3">
+                            <button
+                                type="button"
+                                onClick={() => setDialog(false)}
+                                className="cursor-pointer px-4 py-2 rounded"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="submit"
+                                className="cursor-pointer px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
+                            >
+                                {mood === "update" ? "Update" : "Add"}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            )}
         </div>
     );
 }

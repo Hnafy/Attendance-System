@@ -184,5 +184,24 @@ let deleteAttendance = async (req, res) => {
     }
 };
 
+let deleteAllAttendance = async (req, res) => {
+  try {
+    const professorId = req.params.id;
 
-export { submitAttendance,getAttendance,getAllAttendance,presentStudent,deleteAttendance };
+    // Delete all attendance documents matching this professor
+    const result = await attendanceModel.deleteMany({ professorId });
+
+    // If no documents were deleted
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ msg: "No attendance found for this professor" });
+    }
+
+    res.json({ msg: "All attendance records deleted", deletedCount: result.deletedCount });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+
+
+export { submitAttendance,getAttendance,getAllAttendance,presentStudent,deleteAttendance,deleteAllAttendance };
