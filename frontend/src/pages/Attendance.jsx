@@ -16,7 +16,7 @@ function getDeviceId() {
 }
 
 export default function Attendance() {
-    const { user } = useAuth();
+    const { user,setUser } = useAuth();
     let { setAlert } = useAlert();
     let nav = useNavigate();
     let {setLoading} = useLoading();
@@ -71,8 +71,9 @@ export default function Attendance() {
                 data,
                 config
             );
+            setUser(res.data);
 
-            // console.log("✅ Attendance submitted:", res.data);
+            console.log("✅ Attendance submitted:", res.data);
             setAlert({
                 visible: true,
                 type: "success",

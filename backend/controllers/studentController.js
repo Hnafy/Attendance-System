@@ -21,7 +21,10 @@ let getStudentWithAttendance = async (req, res) => {
             .populate({
                 path: "attendances",
                 options: { sort: { time: -1 } },
-                populate: { path: "lectureId" },
+                populate: [
+                    { path: "lectureId" },
+                    { path: "studentId" },
+                ],
             });
 
         if (!student) {

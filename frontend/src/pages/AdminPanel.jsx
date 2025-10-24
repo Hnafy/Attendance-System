@@ -5,6 +5,7 @@ import Cookies from "js-cookie";
 import { useAlert } from "../context/Alert";
 import { useState, useMemo } from "react";
 import { useDialog } from "../context/Dialog";
+import { CSVLink } from "react-csv";
 
 export default function AdminPanel() {
     const { user, setUser } = useAuth();
@@ -126,6 +127,20 @@ export default function AdminPanel() {
         setDialog(true)
     }
 
+    const headers = [
+        { label: "#", key: "id" },
+        { label: "Student Name", key: "studentName" },
+        { label: "Code", key: "code" },
+        { label: "Email", key: "email" },
+        { label: "Lecture", key: "lecture" },
+        { label: "Class", key: "className" },
+        { label: "Status", key: "status" },
+        { label: "Device ID", key: "deviceId" },
+        { label: "Time", key: "time" },
+        { label: "Location", key: "location" }
+    ];
+    const formattedDate = new Date().toISOString().split("T")[0];
+
     return (
         <div className="p-6 w-full">
             <div className="flex justify-between items-center mb-4 flex-wrap gap-3">
@@ -144,6 +159,28 @@ export default function AdminPanel() {
                         Print
                     </button>
                     </div>
+                    <CSVLink
+                        data={filteredRecords.map((a, index) => ({
+                            id: index + 1,
+                            studentName: a.studentId?.name || "N/A",
+                            code: a.studentId?.studentCode || "-",
+                            email: a.studentId?.email || "-",
+                            lecture: a.lectureId?.lectureName || "N/A",
+                            className: a.lectureId?.className || "N/A",
+                            status: a.status || "-",
+                            deviceId: a.deviceId || "-",
+                            time: a.time ? new Date(a.time).toLocaleString() : "-",
+                            location:
+                            a.lat && a.long
+                                ? `${a.lat.toFixed(5)}, ${a.long.toFixed(5)}`
+                                : "-"
+                        }))}
+                        headers={headers}
+                        filename={`NUSC-Attendance-${formattedDate}.csv`}
+                        >
+                        <button className="btn btn-primary w-full">EXCEL</button>
+                    </CSVLink>
+
                     <div className="w-full">
                         <button className="btn btn-error w-full" onClick={()=>{deleteAllAttendanceDialog()}}>Clear Attendance</button>
                     </div>
@@ -204,41 +241,41 @@ export default function AdminPanel() {
                                             a.status
                                         )} border-b transition`}
                                     >
-                                        <td className="px-4 py-2 border">
+                                        <td className="px-4 py-2 border print-table-padding">
                                             {index + 1}
                                         </td>
-                                        <td className="px-4 py-2 border">
+                                        <td className="px-4 py-2 border print-table-padding">
                                             {student.name || "N/A"}
                                         </td>
-                                        <td className="px-4 py-2 border">
+                                        <td className="px-4 py-2 border print-table-padding">
                                             {student.studentCode || "-"}
                                         </td>
-                                        <td className="px-4 py-2 border">
+                                        <td className="px-4 py-2 border print-table-padding">
                                             {student.email || "-"}
                                         </td>
-                                        <td className="px-4 py-2 border">
+                                        <td className="px-4 py-2 border print-table-padding">
                                             {lecture.lectureName || "N/A"}
                                         </td>
-                                        <td className="px-4 py-2 border">
+                                        <td className="px-4 py-2 border print-table-padding">
                                             {lecture.className || "N/A"}
                                         </td>
                                         <td
-                                            className="px-4 py-2 border font-semibold capitalize cursor-pointer hover:underline hover:opacity-50"
+                                            className="px-4 py-2 border print-table-padding font-semibold capitalize cursor-pointer hover:underline hover:opacity-50"
                                             onClick={() => updateStatus(a._id)}
                                         >
                                             {a.status}
                                         </td>
-                                        <td className="px-4 py-2 border">
+                                        <td className="px-4 py-2 border print-table-padding">
                                             {a.deviceId || "-"}
                                         </td>
-                                        <td className="px-4 py-2 border">
+                                        <td className="px-4 py-2 border print-table-padding">
                                             {a.time
                                                 ? new Date(
                                                       a.time
                                                   ).toLocaleString()
                                                 : "-"}
                                         </td>
-                                        <td className="px-4 py-2 border">
+                                        <td className="px-4 py-2 border print-table-padding">
                                             {a.lat && a.long
                                                 ? `${a.lat.toFixed(
                                                       5

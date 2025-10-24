@@ -17,10 +17,10 @@ export default function Nav() {
     }, [location]);
 
     return (
-        <div className="flex w-full min-h-[130px] justify-between items-center py-10 bg-transparent relative">
+        <div className="no-print flex w-full min-h-[130px] justify-between items-center py-10 bg-transparent relative">
             {/* logo */}
             <div
-                className="text-2xl active cursor-pointer"
+                className="no-print text-2xl active cursor-pointer"
                 onClick={() => setActivePage("/home")}
             >
                 <Link>NUSC</Link>

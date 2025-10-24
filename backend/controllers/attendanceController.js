@@ -134,7 +134,7 @@ const submitAttendance = async (req, res) => {
     }
 
     // 🔹 Save attendance
-    const attendance = await attendanceModel.create({
+    const newAttendances = await attendanceModel.create({
       studentId,
       lectureId: session.lectureId._id,
       professorId: lecture.professorId,
@@ -145,11 +145,19 @@ const submitAttendance = async (req, res) => {
       long,
       time: now,
     });
+    // 🔹 Fetch updated attendances for this student
+    const attendances = await attendanceModel
+      .find({ studentId })
+      .populate("studentId")
+      .populate("lectureId")
+      .sort({ time: -1 }); // optional: sort by newest first
 
+    // 🔹 Respond with full array
     res.status(201).json({
       message: "Attendance recorded successfully",
-      attendance,
+      attendances,
     });
+
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

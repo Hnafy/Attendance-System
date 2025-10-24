@@ -18,6 +18,7 @@ export default function profile() {
     };
     // eslint-disable-next-line react-hooks/rules-of-hooks
     let { user } = useAuth();
+    console.log(user)
     return (
         <div className="p-6">
             <h2 className="text-xl font-semibold mb-4">Attendance Records</h2>
@@ -48,10 +49,10 @@ export default function profile() {
                                     {index + 1}
                                 </td>
                                 <td className="px-4 py-2 border">
-                                    {user.name}
+                                    {a.studentId.name}
                                 </td>
                                 <td className="px-4 py-2 border">
-                                    {user.studentCode}
+                                    {a.studentId.studentCode}
                                 </td>
                                 <td className="px-4 py-2 border">
                                     {a.lectureId?.lectureName || "N/A"}
