@@ -128,9 +128,10 @@ const submitAttendance = async (req, res) => {
       ];
 
       const maxDistance = 0.5; // 500 meters
-      const distance = getDistancesFromLatLonInKm(lat, long, places);
+      const distances = getDistancesFromLatLonInKm(lat, long, places);
+      const inside = distances.some(({ distance }) => distance <= maxDistance);
+      if (!inside) status = "outside";
 
-      if (distance > maxDistance) status = "outside";
     }
 
     // 🔹 Save attendance
