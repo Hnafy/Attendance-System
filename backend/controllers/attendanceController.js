@@ -125,6 +125,7 @@ const submitAttendance = async (req, res) => {
         { lat: 30.42883, lon: 31.03894 }, // Bajor
         { lat: 30.5583271, lon: 31.0206183 }, // Sheben
         { lat: 30.41375, lon: 30.5368817 }, // Sadat
+        { lat: 30.40565, lon: 30.54068 }
       ];
 
       const maxDistance = 0.5; // 500 meters
