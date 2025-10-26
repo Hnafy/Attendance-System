@@ -130,8 +130,8 @@ const submitAttendance = async (req, res) => {
 
       const maxDistance = 0.5; // 500 meters
       const distances = getDistancesFromLatLonInKm(lat, long, places);
-      const inside = distances.some(({ distance }) => distance <= maxDistance);
-      if (!inside) status = "outside";
+const isOutside = distances.every(({ distance }) => distance > maxDistance);
+if (isOutside) status = "outside";
 
     }
 
