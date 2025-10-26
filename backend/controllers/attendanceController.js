@@ -122,16 +122,17 @@ const submitAttendance = async (req, res) => {
     // 🔹 Check location (optional)
     if (lat && long) {
       const places = [
-        { lat: 30.42883, lon: 31.03894 }, // Bajor
-        { lat: 30.5583271, lon: 31.0206183 }, // Sheben
+        // { lat: 30.42883, lon: 31.03894 }, // Bajor
+        // { lat: 30.5583271, lon: 31.0206183 }, // Sheben
         { lat: 30.41375, lon: 30.5368817 }, // Sadat
         { lat: 30.40565, lon: 30.54068 }
       ];
 
       const maxDistance = 0.5; // 500 meters
       const distances = getDistancesFromLatLonInKm(lat, long, places);
-const isOutside = distances.every(({ distance }) => distance > maxDistance);
-if (isOutside) status = "outside";
+      const isOutside = distances.some(({ distance }) => distance <= maxDistance);
+      if (isOutside) status = "outside";
+      // console.log({ status, distances });
 
     }
 
