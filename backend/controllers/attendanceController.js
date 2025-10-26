@@ -121,7 +121,7 @@ const submitAttendance = async (req, res) => {
       const place = { lat: 30.41375, lon: 30.5368817 }; // Sadat
 
     const distance = getDistanceFromLatLonInKm(lat, long, place.lat, place.lon);
-    const maxDistance = 3; // km — allows Sadat range
+    const maxDistance = 1.2; // km — allows Sadat range .97 km
 
     if (distance >= maxDistance) {
       status = "outside";
