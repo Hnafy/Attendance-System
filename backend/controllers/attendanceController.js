@@ -48,23 +48,20 @@ const getAllAttendance = async (req, res) => {
 
 
 // 📘 Helper: calculate distance between two coordinates
-function getDistancesFromLatLonInKm(lat1, lon1, locations) {
+function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
   const R = 6371; // Earth's radius in km
+  const toRad = deg => (deg * Math.PI) / 180;
 
-  return locations.map(({ lat, lon }) => {
-    const dLat = ((lat - lat1) * Math.PI) / 180;
-    const dLon = ((lon - lon1) * Math.PI) / 180;
-    const a =
-      Math.sin(dLat / 2) ** 2 +
-      Math.cos((lat1 * Math.PI) / 180) *
-        Math.cos((lat * Math.PI) / 180) *
-        Math.sin(dLon / 2) ** 2;
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const distance = R * c;
-    return { lat, lon, distance };
-  });
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
+
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c; // distance in km
 }
-
 
 const submitAttendance = async (req, res) => {
   try {
@@ -121,18 +118,15 @@ const submitAttendance = async (req, res) => {
 
     // 🔹 Check location (optional)
     if (lat && long) {
-      const places = [
-        // { lat: 30.42883, lon: 31.03894 }, // Bajor
-        // { lat: 30.5583271, lon: 31.0206183 }, // Sheben
-        { lat: 30.41375, lon: 30.5368817 }, // Sadat
-        { lat: 30.40565, lon: 30.54068 }
-      ];
+      const place = { lat: 30.41375, lon: 30.5368817 }; // Sadat
 
-      const maxDistance = 0.5; // 500 meters
-      const distances = getDistancesFromLatLonInKm(lat, long, places);
-      const isOutside = distances.some(({ distance }) => distance <= maxDistance);
-      if (isOutside) status = "outside";
-      // console.log({ status, distances });
+    const distance = getDistanceFromLatLonInKm(lat, long, place.lat, place.lon);
+    const maxDistance = 3; // km — allows Sadat range
+
+    if (distance >= maxDistance) {
+      status = "outside";
+    }
+      // console.log(distance,maxDistance,distance >= maxDistance);
 
     }
 
