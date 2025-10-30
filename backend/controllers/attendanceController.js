@@ -1,7 +1,13 @@
 import attendanceModel from "../models/attendanceModel.js";
 import attendanceSessionModel from "../models/attendanceSessionModel.js";
-import {lectureModel} from "../models/lectureModel.js";
+import { lectureModel } from "../models/lectureModel.js";
 
+// 📍 Define multiple allowed places
+const ALLOWED_PLACES = [
+  { name: "Sadat management build", lat: 30.41375, lon: 30.5368817, maxDistance: 1.2 },
+  { name: "Lecture hall", lat: 30.40565, lon: 30.54068 , maxDistance: 1.0 },
+  { name: "Bajor", lat: 30.4282639, lon: 31.0392314, maxDistance: 1.0 }
+];
 
 // 📘 Get attendance by student
 const getAttendance = async (req, res) => {
@@ -18,7 +24,7 @@ const getAttendance = async (req, res) => {
       .populate("lectureId")
       .sort({ createdAt: -1 });
 
-    if (!result) {
+    if (result.length === 0) {
       return res.status(404).json({ message: "No attendance record found" });
     }
 
@@ -27,16 +33,17 @@ const getAttendance = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
-// 📘 Get attendance by admin
+
+// 📘 Get attendance by professor
 const getAllAttendance = async (req, res) => {
   try {
     const result = await attendanceModel
-      .find({professorId:req.user.id})
+      .find({ professorId: req.user.id })
       .populate("studentId")
       .populate("lectureId")
       .sort({ createdAt: -1 });
 
-    if (!result) {
+    if (result.length === 0) {
       return res.status(404).json({ message: "No attendance record found" });
     }
 
@@ -46,11 +53,10 @@ const getAllAttendance = async (req, res) => {
   }
 };
 
-
-// 📘 Helper: calculate distance between two coordinates
+// 📘 Helper: calculate distance between two coordinates using Haversine formula
 function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
   const R = 6371; // Earth's radius in km
-  const toRad = deg => (deg * Math.PI) / 180;
+  const toRad = (deg) => (deg * Math.PI) / 180;
 
   const dLat = toRad(lat2 - lat1);
   const dLon = toRad(lon2 - lon1);
@@ -63,6 +69,18 @@ function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
   return R * c; // distance in km
 }
 
+// 📘 Helper: check if location is within any allowed place
+function isWithinAllowedLocation(lat, long) {
+  for (const place of ALLOWED_PLACES) {
+    const distance = getDistanceFromLatLonInKm(lat, long, place.lat, place.lon);
+    if (distance < place.maxDistance) {
+      return true;
+    }
+  }
+  return false;
+}
+
+// 📘 Submit attendance
 const submitAttendance = async (req, res) => {
   try {
     const { studentId, deviceId, lat, long } = req.body;
@@ -82,9 +100,9 @@ const submitAttendance = async (req, res) => {
 
     // Then find an active session for this lecture
     const session = await attendanceSessionModel
-      .findOne({ 
+      .findOne({
         isActive: true,
-        lectureId: lecture._id
+        lectureId: lecture._id,
       })
       .populate("lectureId");
 
@@ -116,18 +134,11 @@ const submitAttendance = async (req, res) => {
     });
     if (sameDevice) status = "suspicious";
 
-    // 🔹 Check location (optional)
+    // 🔹 Check location against multiple allowed places
     if (lat && long) {
-      const place = { lat: 30.41375, lon: 30.5368817 }; // Sadat
-
-    const distance = getDistanceFromLatLonInKm(lat, long, place.lat, place.lon);
-    const maxDistance = 1.2; // km — allows Sadat range .97 km
-
-    if (distance >= maxDistance) {
-      status = "outside";
-    }
-      // console.log(distance,maxDistance,distance >= maxDistance);
-
+      if (!isWithinAllowedLocation(lat, long)) {
+        status = "outside";
+      }
     }
 
     // 🔹 Save attendance
@@ -142,6 +153,7 @@ const submitAttendance = async (req, res) => {
       long,
       time: now,
     });
+
     // 🔹 Fetch updated attendances for this student
     const attendances = await attendanceModel
       .find({ studentId })
@@ -154,41 +166,51 @@ const submitAttendance = async (req, res) => {
       message: "Attendance recorded successfully",
       attendances,
     });
-
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
 
-
-let presentStudent = async(req,res)=>{
+// 📘 Mark student as present (admin override)
+let presentStudent = async (req, res) => {
   try {
-          let existingAttendance = await attendanceModel.findByIdAndUpdate(req.params.id,{
-              status: "present"
-          }, { new: true }).populate("studentId").populate("lectureId");
-          if (!existingAttendance) {
-              return res.status(404).json({ msg: "Lecture not found" });
-          }
-  
-          res.json({ msg: `The admin has marked (${existingAttendance.studentId.name}) as present.`, data: existingAttendance });
-      } catch (err) {
-          res.status(500).json({ error: err.message });
-      }
-}
+    let existingAttendance = await attendanceModel
+      .findByIdAndUpdate(
+        req.params.id,
+        { status: "present" },
+        { new: true }
+      )
+      .populate("studentId")
+      .populate("lectureId");
 
-let deleteAttendance = async (req, res) => {
-    try {
-        let existingAttendance = await attendanceModel.findByIdAndDelete(req.params.id);
-        if (!existingAttendance) {
-            return res.status(404).json({ msg: "attendance not found" });
-        }
-
-        res.json({ msg: "attendance Deleted", data: existingAttendance });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
+    if (!existingAttendance) {
+      return res.status(404).json({ msg: "Lecture not found" });
     }
+
+    res.json({
+      msg: `The admin has marked (${existingAttendance.studentId.name}) as present.`,
+      data: existingAttendance,
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
 
+// 📘 Delete single attendance record
+let deleteAttendance = async (req, res) => {
+  try {
+    let existingAttendance = await attendanceModel.findByIdAndDelete(req.params.id);
+    if (!existingAttendance) {
+      return res.status(404).json({ msg: "attendance not found" });
+    }
+
+    res.json({ msg: "attendance Deleted", data: existingAttendance });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// 📘 Delete all attendance records for a professor
 let deleteAllAttendance = async (req, res) => {
   try {
     const professorId = req.params.id;
@@ -207,6 +229,11 @@ let deleteAllAttendance = async (req, res) => {
   }
 };
 
-
-
-export { submitAttendance,getAttendance,getAllAttendance,presentStudent,deleteAttendance,deleteAllAttendance };
+export {
+  submitAttendance,
+  getAttendance,
+  getAllAttendance,
+  presentStudent,
+  deleteAttendance,
+  deleteAllAttendance,
+};
