@@ -134,13 +134,15 @@ const submitAttendance = async (req, res) => {
     });
     if (sameDevice) status = "suspicious";
 
-    // 🔹 Check location against multiple allowed places
-    if (lat && long) {
-      if (!isWithinAllowedLocation(lat, long)) {
-        status = "outside";
-      }
-    }
-
+    // 🔹 Check location status
+if (!lat || !long) {
+  status = "suspicious";   // No location → suspicious
+} else {
+  // Location exists → check if inside allowed zone
+  if (!isWithinAllowedLocation(lat, long)) {
+    status = "outside";
+  }
+}
     // 🔹 Save attendance
     const newAttendances = await attendanceModel.create({
       studentId,
