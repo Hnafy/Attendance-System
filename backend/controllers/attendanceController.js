@@ -43,10 +43,6 @@ const getAllAttendance = async (req, res) => {
       .populate("lectureId")
       .sort({ createdAt: -1 });
 
-    if (result.length === 0) {
-      return res.status(404).json({ message: "No attendance record found" });
-    }
-
     res.json(result);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -134,13 +130,15 @@ const submitAttendance = async (req, res) => {
     });
     if (sameDevice) status = "suspicious";
 
-    // 🔹 Check location against multiple allowed places
-    if (lat && long) {
-      if (!isWithinAllowedLocation(lat, long)) {
-        status = "outside";
-      }
+    // 🔹 Check location status
+    if (!lat || !long) {
+      status = "suspicious";   // No location → suspicious
+    } else {
+    // Location exists → check if inside allowed zone
+    if (!isWithinAllowedLocation(lat, long)) {
+      status = "outside";
     }
-
+}
     // 🔹 Save attendance
     const newAttendances = await attendanceModel.create({
       studentId,
