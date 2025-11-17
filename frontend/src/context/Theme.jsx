@@ -6,18 +6,23 @@ export const ThemeContext = createContext();
 export function ThemeProvider({ children }) {
     const [isDark, setIsDark] = useState(() => {
         const savedTheme = localStorage.getItem("theme");
-        return savedTheme === "dark";
+
+        // If user has a saved theme, use it
+        if (savedTheme) {
+            return savedTheme === "dark";
+        }
+
+        // Default: Dark mode
+        return true;
     });
 
     useEffect(() => {
-        // Update body class when theme changes
         document.body.classList.toggle("dark", isDark);
-        // Save theme preference
         localStorage.setItem("theme", isDark ? "dark" : "light");
     }, [isDark]);
 
     const toggleTheme = () => {
-        setIsDark(!isDark);
+        setIsDark(prev => !prev);
     };
 
     return (
