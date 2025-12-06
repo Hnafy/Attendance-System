@@ -7,6 +7,7 @@ import Cookies from "js-cookie";
 import { useAuth } from "../context/Auth";
 import AttendanceButtons from "../components/AttendanceButtons";
 import { useLoading } from "../context/Loading";
+import QRCode from "qrcode";
 
 export default function LectureTable() {
     let { setDialog, setMood, setId } = useDialog();
@@ -70,7 +71,16 @@ export default function LectureTable() {
         };
 
         fetchData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [admin]);
+        const generateQR = async (className) => {
+            let url = `https://nusc-attendance.netlify.app/attendance/${className}`;
+            const qrData = await QRCode.toDataURL(url);
+            const a = document.createElement("a");
+            a.href = qrData;
+            a.download = `qrCode-${className}.png`;
+            a.click();
+        };
     return (
         <div className="p-6 w-full">
             <div className="flex justify-between items-center mb-4">
@@ -123,7 +133,7 @@ export default function LectureTable() {
                                 <td className="px-4 py-2 border">
                                     {new Date(lecture.endTime).toLocaleString()}
                                 </td> */}
-                                <td className="px-4 py-2 border text-center">
+                                <td className="px-4 py-2 border text-center flex justify-center gap-4">
                                     <div className="flex flex-col items-center gap-2">
 
                                     <div>
@@ -142,6 +152,7 @@ export default function LectureTable() {
                                     </div>
                                     <AttendanceButtons lectureId={lecture._id} />
                                     </div>
+                                    <button className="btn btn-primary" onClick={()=>generateQR(lecture.className)}>Generate Qr-Code</button>
                                 </td>
                             </tr>
                         ))}
