@@ -89,16 +89,18 @@ const submitAttendance = async (req, res) => {
 
     // 🔹 Find the current lecture for this class
     // First, find the lecture for this class
-    const lecture = await lectureModel.findOne({ className: className });
+    const lecture = await lectureModel.find({ className: className });
     if (!lecture) {
       return res.status(404).json({ message: "No lecture found for this class" });
     }
+    // for checking what classname is active from lecture array have the same className
+    const lectureIds = lecture.map(l => l._id);
 
     // Then find an active session for this lecture
     const session = await attendanceSessionModel
       .findOne({
         isActive: true,
-        lectureId: lecture._id,
+        lectureId: { $in: lectureIds },
       })
       .populate("lectureId");
 
