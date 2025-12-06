@@ -16,6 +16,8 @@ import AdminRoute from "./components/AdminRoute";
 import Lectures from "./pages/Lectures";
 import { LecturesProvider } from "./context/lectures";
 import GetClassName from "./pages/GetClassName";
+import "@fortawesome/fontawesome-free/css/all.min.css";
+import AttendanceSubmitted from "./pages/AttendanceSubmitted";
 
 function App() {
     let { loading } = useLoading();
@@ -29,7 +31,10 @@ function App() {
                             <Nav />
                             <div className="w-full min-h-[calc(100vh-130px)]">
                                 <Routes>
-                                    <Route path="/" element={<Login />} />
+                                    <Route
+                                        path="/"
+                                        element={<GetClassName />}
+                                    />
                                     <Route path="/login" element={<Login />} />
                                     <Route
                                         path="/register"
@@ -45,19 +50,11 @@ function App() {
                                     />
                                     <Route
                                         path="/attendance"
-                                        element={
-                                            <ProtectedRoute>
-                                                <GetClassName />
-                                            </ProtectedRoute>
-                                        }
+                                        element={<GetClassName />}
                                     />
                                     <Route
                                         path="/attendance/:classNameInQr"
-                                        element={
-                                            <ProtectedRoute>
-                                                <Attendance />
-                                            </ProtectedRoute>
-                                        }
+                                        element={<Attendance />}
                                     />
                                     <Route
                                         path="/admin/:id"
@@ -83,6 +80,7 @@ function App() {
                                             </ProtectedRoute>
                                         }
                                     />
+                                    <Route path="/attendanceSubmitted" element={<AttendanceSubmitted />} />
                                     <Route path="*" element={<NotFound />} />
                                 </Routes>
                                 {loading && (

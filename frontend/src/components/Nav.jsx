@@ -30,7 +30,7 @@ export default function Nav() {
             <div className="bg-[url(/Line-8.png)] w-full h-[25px] absolute bottom-[15px] bg-no-repeat bg-contain"></div>
 
             <div className="flex items-center text-xs gap-1 md:text-xl md:gap-5">
-                {token && (
+                {token ? (
                     <>
                         {user && user.isAdmin && (
                             <Link
@@ -48,6 +48,15 @@ export default function Nav() {
                         <Link to={`/student/${user.id}`}>
                             <h2>{user.name}</h2>
                         </Link>
+                    </>
+                ):(
+                    <>
+                    <Link to={"/register"}>
+                        <button className="btn btn-primary">Register</button>
+                    </Link>
+                    <Link to={"/login"}>
+                        <button className="btn text-primary">Login</button>
+                    </Link>
                     </>
                 )}
                 <button
